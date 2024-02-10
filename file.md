@@ -57,6 +57,9 @@ Create the subdirectories: <i>mkdir /home/Altschool/code /home/Altschool/tests /
 9. Create a user and force the user to change his/her password upon login
 ### Answer
 <i>sudo useradd -m -s /usr/bin/bash -p $(openssl passwd -1) Altschool2</i><br>
+or<br>
+<i>sudo useradd -m -s /usr/bin/bash Altschool2</i><br>
+<i>sudo passwd -e Altschool2</i><br>
 
 ## Questions
 10. Lock a users password
