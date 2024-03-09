@@ -1,9 +1,31 @@
 ## Assignment 2
 
-#!/bin/bash
+# 1. 
+    Write a shell script that checks the disk usage in a given directory.
+    the script can take two optional arguments and one compulsory argument...
+    -d: which means that all files and directory within the specified directory or directories should be listed.
+    -n: which means that the top N enteries should be returned.
+    list of directories: this will be the directories you want to check it's disk usage
+    eg yourscript.sh -n 5 /var
+    should return the top 5 directories wrt disk usage in /var directory
+    yourscript.sh -d /var
+    should list both directories and files
+    Note: if -n argument is not given, it should return 8 enteries by default.
+
+# 2.
+    Create a backup script. This script creates a backup of a given directoryand saves it in another directory with a timestamp. It takes two arguments:
+    the source directory and the destination directory
+    Note: The backup should be a tar archive
+
+
 
 # Function to check disk usage in a given directory
-check_disk_usage() {
+
+#!/bin/bash
+
+check_disk_usage() 
+{
+
     local directory=$1
     local list_files=false
     local top_entries=8
@@ -20,30 +42,33 @@ check_disk_usage() {
     # Remove the command line arguments from the argument list
     shift $((OPTIND - 1))
 
-    # Check if the directory exists
-    if [ ! -d "$directory" ]; then
-        echo "Directory does not exist: $directory" >&2
-        return 1
-    fi
     if [ "$list_files" = true ]; then
-        # List all files in the directory
-        echo "The $top_entries largest files in $directory are:"
-        du -a $directory 2> /dev/null | sort -n -r | head -n $top_entries
+        du -ah $directory | sort -rh | head -n $top_entries
     else
-        # Show the total disk usage of the directory
-        echo "The total disk usage of $directory is:"
-        du -sh $directory 2> /dev/null
+        du -h $directory | sort -h | head -n $top_entries
     fi
 }
 
-# Example usage
-check_disk_usage /var -n 5
-check_disk_usage /var -d
 
-#!/bin/bash
+# Example usage
+check_disk_usage /var/log -d -n 10
+# Output:
+ 4.0K    /var/log/lastlog </br>
+ 4.0K    /var/log/ntpstats </br>
+ 4.0K    /var/log/samba </br>
+ 4.0K    /var/log/tuned </br>
+ 4.0K    /var/log/chrony </br>
+ 4.0K    /var/log/ConsoleKit </br>
+ 4.0K    /var/log/plymouth </br>
+ 4.0K    /var/log/private </br>
+ 4.0K    /var/log/sa </br>
+ 4.0K    /var/log/sssd </br>
 
 # Function to create a backup of a given directory
 create_backup() {
+    </br>
+
+
     local source="$1"
     local destination="$2"
     local timestamp=$(date +%Y%m%d%H%M%S)
@@ -54,5 +79,8 @@ create_backup() {
 }
 # Example usage
 create_backup /var/log /tmp
+# Output:
+ Backup created: /tmp/backup_20210301123456.tar.gz
+
 
 
