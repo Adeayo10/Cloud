@@ -20,11 +20,19 @@ check_disk_usage() {
     # Remove the command line arguments from the argument list
     shift $((OPTIND - 1))
 
-    # Check disk usage
-    if $list_files; then
-        du -ah --max-depth=1 "$directory" | sort -hr | head -n "$top_entries"
+    # Check if the directory exists
+    if [ ! -d "$directory" ]; then
+        echo "Directory does not exist: $directory" >&2
+        return 1
+    fi
+    if [ "$list_files" = true ]; then
+        # List all files in the directory
+        echo "The $top_entries largest files in $directory are:"
+        du -a $directory 2> /dev/null | sort -n -r | head -n $top_entries
     else
-        du -h --max-depth=1 "$directory" | sort -hr | head -n "$top_entries"
+        # Show the total disk usage of the directory
+        echo "The total disk usage of $directory is:"
+        du -sh $directory 2> /dev/null
     fi
 }
 
@@ -46,6 +54,5 @@ create_backup() {
 }
 # Example usage
 create_backup /var/log /tmp
-
 
 
