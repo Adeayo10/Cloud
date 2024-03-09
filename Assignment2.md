@@ -1,66 +1,51 @@
 ## Assignment 2
 
-1.  Write a shell script that checks the disk usage in a given directory.
-    the script can take two optional arguments and one compulsory argument...
-    -d: which means that all files and directory within the specified directory or directories should be listed.
-    -n: which means that the top N enteries should be returned.
-    list of directories: this will be the directories you want to check it's disk usage
-
-2.  Create a backup script. This script creates a backup of a given directory and saves it in another directory with a timestamp. It takes two arguments:
-    the source directory and the destination directory
-    Note: The backup should be a tar archive
-
-## Answers
-
 #!/bin/bash
 
-```bash
 # Function to check disk usage in a given directory
 check_disk_usage() {
     local directory=$1
-    local n=8
-    local optstring=":d:n:"
-    while getopts $optstring opt;
-    do
+    local list_files=false
+    local top_entries=8
+
+    # Parse command line arguments
+    while getopts ":d:n:" opt; do
         case $opt in
-            d) directory=$OPTARG;;
-            n) n=$OPTARG;;
+            d) list_files=true;;
+            n) top_entries=$OPTARG;;
             \?) echo "Invalid option: -$OPTARG" >&2;;
         esac
     done
-    du -h $directory | sort -rh | head -$n
+
+    # Remove the command line arguments from the argument list
+    shift $((OPTIND - 1))
+
+    # Check disk usage
+    if $list_files; then
+        du -ah --max-depth=1 "$directory" | sort -hr | head -n "$top_entries"
+    else
+        du -h --max-depth=1 "$directory" | sort -hr | head -n "$top_entries"
+    fi
 }
-example
-check_disk_usage /home/altschool -d -n 5
-```
-# Output
-```bash
-4.0K    /home/altschool/backup
-```
-```bash
+
+# Example usage
+check_disk_usage /var -n 5
+check_disk_usage /var -d
+
+#!/bin/bash
+
 # Function to create a backup of a given directory
 create_backup() {
-    local source="/home/vagrant/altschool"
-    local backup_dir="/home/vagrant/backup"
+    local source="$1"
+    local destination="$2"
     local timestamp=$(date +%Y%m%d%H%M%S)
     local backup_file="backup_$timestamp.tar.gz"
-    local optstring=":s:d:"
-    while getopts $optstring opt;
-    do
-        case $opt in
-            s) source=$OPTARG;;
-            d) backup_dir=$OPTARG;;
-            \?) echo "Invalid option: -$OPTARG" >&2;;
-        esac
-    done
-    tar -czf $backup_dir/$backup_file $source
-    echo "$backup_dir/$backup_file"
+
+    tar -czf "$destination/$backup_file" "$source"
+    echo "Backup created: $destination/$backup_file"
 }
-example
-create_backup /home/vagrant/altschool /home/vagrant/altschool/backup
-```
-# Output
-```bash
-/home/altschool/backup/backup_20210819123456.tar
+# Example usage
+create_backup /var/log /tmp
+
 
 
