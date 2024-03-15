@@ -52,7 +52,8 @@ check_disk_usage()
             entry=$(sudo find "$directory" -type f -exec du -Sh {} + | sort -rh | head -n "$top_entries")
             echo "$entry"
         else
-            echo "adeayo"
+            entry=$(du -h "$dir" 2>/dev/null | sort -rh | head -n "$top_entries")
+        echo "$entry"
         fi
         #echo "$enteries"
     done
