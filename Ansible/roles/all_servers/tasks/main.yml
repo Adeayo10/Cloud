@@ -1,0 +1,9 @@
+- name: Install Apache and php package
+  tags: apache,apache2,httpd,centos,ubuntu
+  package:
+    name:
+      - "{{ apache_pkg_name }}"
+      - "{{ php_pkg_name }}"
+    state: latest
+    update_cache: yes
+  

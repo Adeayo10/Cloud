@@ -1,0 +1,6 @@
+- name: restart_apache_service
+  tags: apache,ubuntu,httpd
+  service:
+    name: "{{ apache_service_name }}"
+    state: restarted
+  when: ansible_distribution == 'Ubuntu'

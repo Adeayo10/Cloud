@@ -1,0 +1,104 @@
+---
+ - hosts: all
+   become: true
+   pre_tasks:
+ 
+   - name: install updates (CentOS)
+     tags: always
+     dnf:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "CentOS"
+ 
+   - name: install updates (Ubuntu)
+     tags: always
+     apt:
+       upgrade: dist
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+ 
+ 
+ - hosts: all
+   become: true
+   tasks:
+ 
+   - name: install httpd package (CentOS)
+     tags: apache,centos,httpd
+     dnf:
+       name:
+         - httpd
+         - php
+       state: latest
+     when: ansible_distribution == "CentOS"
+ 
+   - name: install apache2 package (Ubuntu)
+     tags: apache,apache2,ubuntu
+     apt:
+       name:
+         - apache2
+         - libapache2-mod-php
+       state: latest
+     when: ansible_distribution == "Ubuntu"
+    
+   - name: Start httpd service (CentOS)
+     tags: apache,httpd
+     service:
+       name: httpd
+       state: started
+       enabled: yes
+     when: ansible_distribution == 'CentOS'
+    
+   - name: change E-mail Address for Admin
+     tags: apache,centos,httpd
+     lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^ServerAdmin'
+        line: 'ServerAdmin somebody@somewhere.net'
+     when: ansible_distribution == 'CentOS'
+     register: result
+
+   - name: restart httpd service
+     tags: apache,httpd
+     service:
+       name: httpd
+       state: restarted
+     when: result.changed
+  
+   -  name: create user simone
+      tags: always
+      user:
+       name: simone
+       groups: root
+       
+   - name: create simone user
+     user:
+       name: simone
+       groups: root
+     
+   - name: add ssh key for simone
+     tags: always
+     authorized_key:
+       user: simone
+       key: "{{ lookup('file', '/home/simone/.ssh/id_rsa.pub') }}"
+         
+   - name: add sudoers file for simone
+     tags: always
+     copy:
+       src: sudoer_simone "create this in the file directory"
+       dest: /etc/sudoers.d/simone
+       owner: root
+       group: root
+       mode: 0440
+
+   - name: copy html file for site
+     tags: apache,apache2,httpd
+     copy:
+       src: default_site.html
+       dest: /var/www/html/index.html
+       owner: root
+       group: root
+       mode: 0644
+
+   
+
+ 

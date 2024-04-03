@@ -1,0 +1,36 @@
+- name: Start httpd service
+  service:
+    name: "{{ apache_service_name }}"
+    state: started
+  when: ansible_distribution == 'CentOS'
+
+- name: enable 80/tcp port 
+  firewalld:
+    port: 80/tcp
+    permanent: true
+    state: enabled
+  when: ansible_distribution == 'CentOS'
+
+- name: copy index.html
+  copy:
+    src: default.html
+    dest: /var/www/html/index.html
+  owner: root
+  group: root
+  mode: 0644
+
+- name: change E-mail Address for Admin on centos
+  tags: apache,centos,httpd
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: 'ServerAdmin somebody@somewhere.net'
+  register: result
+
+- name: restart httpd service
+  tags: apache,centos,httpd
+  service:
+    name: "{{ apache_service_name }}"
+    state: restarted
+  when: result.changed == true
+  

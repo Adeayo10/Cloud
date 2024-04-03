@@ -1,6 +1,6 @@
 [ubuntu]
-172.31.92.35 apache_pkg=apache2 php_pkg=libapache2-mod-php_pkg
-172.31.81.99 apache_pkg=apache2 php_pkg=libapache2-mod-php_pkg
+172.31.92.35 
+172.31.81.99 
 
 [centos]
-172.31.88.161 apache_pkg=httpd php_pkg=php
+172.31.88.161 

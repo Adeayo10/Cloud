@@ -1,0 +1,25 @@
+- name: copy index.html
+  copy:
+    src: default.html
+    dest: /var/www/html/index.html
+  owner: root
+  group: root
+  mode: 0644
+
+- name: change E-mail Address for Admin on ubuntu
+  tags: apache,ubuntu,httpd
+  lineinfile:
+    path: /etc/apache2/apache2.conf
+    regexp: '^ServerAdmin'
+    line: 'ServerAdmin somebody@somewhere.net'
+  notify: restart_apache_service
+  # register: result
+
+# - name: restart apache2 service
+#   tags: apache,ubuntu,httpd
+#   service:
+#     name: "{{ apache_service_name }}"
+#     state: restarted
+#   when: result.changed == true
+
+
