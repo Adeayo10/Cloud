@@ -7,3 +7,11 @@
     state: latest
     update_cache: yes
   
+- name: clone git repo
+  git:
+    repo:
+      - "{{ git_repo }}"
+    dest: /var/www/html
+    update: yes
+  tags: apache,apache2,httpd,centos,ubuntu
+  
