@@ -38,5 +38,13 @@ sudo systemctl enable mysql
 sudo systemctl start mysql
 
 # Create a new MySQL database for the Laravel application
-mysql -u root -e "CREATE DATABASE laravel; GRANT ALL ON laravel.* TO 'laraveluser'@'localhost' IDENTIFIED BY 'ansible'; FLUSH PRIVILEGES;"
+sudo mysql -u root
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'vagrant';
+CREATE DATABASE laravel;
+GRANT ALL ON laravel.* TO 'laraveluser'@'localhost' IDENTIFIED BY 'vagrant';
+FLUSH PRIVILEGES;
+mysql -u root -p vagrant laravel < /home/vagrant/laravelapp/database/laravel.sql
+exit
+
 
