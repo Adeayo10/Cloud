@@ -1,30 +1,16 @@
 ---
 - name: Install LAMP stack
-  become: true
   hosts: slave
+  become: true
   tasks:
-
-    - name: sudo apt update slave
-      apt:
-        update_cache: yes
-
-    - name: sudo apt upgrade slave
-      apt:
-        upgrade: yes
-          
     - name: Copy bash script to Slave node
       copy:
-        src: /home/vagrant/lamp_install.sh
-        dest: /home/vagrant/lamp_install.sh
+        src: /home/vagrant/LAMP_install.sh
+        dest: /home/vagrant/LAMP_install.sh
         mode: 0755
 
-    - name: clone laravel app
-      git:
-        repo: https://github.com/laravel/laravel
-        dest: /var/www/laravel
-
     - name: Execute bash script to setup LAMP stack
-      command: /home/vagrant/lamp_install.sh
+      command: /home/vagrant/LAMP_install.sh
 
     - name: Create cron job
       cron:
@@ -32,4 +18,13 @@
         minute: "0"
         hour: "0"
         job: "/usr/bin/uptime >> /home/vagrant/uptime.log"
-        state: present
+    
+    - name: Verify PHP application accessibility 
+      shell: "curl http://192.168.33.12/var/www/laravel"
+      register: result 
+      ignore_errors: true
+
+    - name: Show output debug
+      debug:
+      var: result.stdout
+        
