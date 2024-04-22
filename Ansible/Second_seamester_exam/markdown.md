@@ -27,6 +27,7 @@ The code is in LAMP_install.sh
 - Execute the bash script on the slave server
 - Create a cron job to check the server's uptime every 12 am
 - check the php application accesiible from the browser
+![ansible playbook](images/ansible_playbook.png)
 The code is in playbook.yml
 
 # displaying the Laravel application
