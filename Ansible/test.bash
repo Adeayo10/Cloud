@@ -12,39 +12,49 @@ sudo apt-get install -y mysql-server
 # Install PHP
 sudo apt-get install -y php libapache2-mod-php php-mysql
 
-# Clone PHP application from GitHub
-git clone https://github.com/laravel/laravel /home/vagrant/laravelapp
+ #Enable Apache PHP module
+sudo a2enmod php7.4
 
-# Configure Apache
-sudo systemctl enable apache2
-sudo systemctl start apache2
+#Clone PHP application from GitHub
+sudo git clone https://github.com/laravel/laravel /home/ansible/laravelapp
 
-# Configure Apache
+# Set up permissions for Laravel storage and bootstrap/cache directories
+sudo chown -R www-data:www-data /home/ansible/laravelapp/storage /home/ansible/laravelapp/bootstrap/cache
+sudo chmod -R 775 /home/ansible/laravelapp/storage /home/ansible/laravelapp/bootstrap/cache
+
+# Copy laravel.sh to the Laravel application directory
+cp /home/ansible/laravel.sh /home/ansible/laravelapp/laravel.sh
+chmod +x /home/ansible/laravelapp/laravel.sh
+
+# Execute laravel.sh script
+/home/ansible/laravelapp/laravel.sh
+
+# Configure Apache virtual host for Laravel application
 echo "<VirtualHost *:80>
-    DocumentRoot /home/vagrant/laravelapp/public
-    <Directory /home/vagrant/laravelapp/public>
+    DocumentRoot /var/www/html/laravelapp/public
+    <Directory /var/www/html/laravelapp/public>
+        Options Indexes FollowSymLinks
         AllowOverride All
-        Order allow,deny
-        Allow from all
+        Require all granted
     </Directory>
 </VirtualHost>" | sudo tee /etc/apache2/sites-available/laravel.conf
 
-sudo a2ensite laravel
+# Enable the Laravel site
+sudo a2ensite laravel.conf
+
+# Enable the Apache rewrite module
 sudo a2enmod rewrite
+
+# Restart Apache to apply the changes
 sudo systemctl restart apache2
 
 # Configure MySQL
 sudo systemctl enable mysql
 sudo systemctl start mysql
 
-# Create a new MySQL database for the Laravel application
-sudo mysql -u root
-
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'vagrant';
-CREATE DATABASE laravel;
-GRANT ALL ON laravel.* TO 'laraveluser'@'localhost' IDENTIFIED BY 'vagrant';
-FLUSH PRIVILEGES;
-mysql -u root -p vagrant laravel < /home/vagrant/laravelapp/database/laravel.sql
-exit
-
-
+# # Create a database for the Laravel application
+# sudo mysql
+# CREATE DATABASE laravel;
+# CREATE USER 'laraveluser'@'localhost' IDENTIFIED BY 'laravel';
+# GRANT ALL ON laravel.* TO 'laraveluser'@'localhost';
+# FLUSH PRIVILEGES;

@@ -1,0 +1,35 @@
+---
+- name: Install LAMP stack
+  become: true
+  hosts: slave
+  tasks:
+
+    - name: sudo apt update slave
+      apt:
+        update_cache: yes
+
+    - name: sudo apt upgrade slave
+      apt:
+        upgrade: yes
+          
+    - name: Copy bash script to Slave node
+      copy:
+        src: /home/vagrant/lamp_install.sh
+        dest: /home/vagrant/lamp_install.sh
+        mode: 0755
+
+    - name: clone laravel app
+      git:
+        repo: https://github.com/laravel/laravel
+        dest: /var/www/laravel
+
+    - name: Execute bash script to setup LAMP stack
+      command: /home/vagrant/lamp_install.sh
+
+    - name: Create cron job
+      cron:
+        name: "uptime check"
+        minute: "0"
+        hour: "0"
+        job: "/usr/bin/uptime >> /home/vagrant/uptime.log"
+        state: present

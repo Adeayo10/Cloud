@@ -1,33 +1,40 @@
----
-- hosts: slave
-  tasks:
-    - name: Copy bash script to Slave node
-      copy:
-        src: /home/vagrant/lamp.sh
-        dest: /home/vagrant/lamp.sh
-        mode: 0755
+# ---
+# - hosts: slave
+#   become: yes
+#   tasks:
+#     - name: Copy bash script to Slave node
+#       copy:
+#         src: /home/ansible/lamp.sh
+#         dest: /home/ansible/lamp.sh
+#         mode: 0755
 
-    - name: Execute bash script to setup LAMP stack
-      command: /home/vagrant/lamp.sh
+#     - name: Execute bash script to setup LAMP stack
+#       command: /home/ansible/lamp.sh
+      
 
-    - name: Create cron job
-      cron:
-        name: "uptime check"
-        minute: "0"
-        hour: "0"
-        job: "/usr/bin/uptime >> /home/vagrant/uptime.log"
+#     - name: Create cron job
+#       cron:
+#         name: "uptime check"
+#         minute: "0"
+#         hour: "0"
+#         job: "/usr/bin/uptime >> /home/ansible/uptime.log"
     
-    - name: Copy bash script to Slave node
-      copy:
-        src: /home/vagrant/laravel.sh
-        dest: /home/vagrant/laravel.sh
-        mode: 0755
+#     - name: Copy bash script to Slave node
+#       copy:
+#         src: /home/ansible/laravel.sh
+#         dest: /home/ansible/laravel.sh
+#         mode: 0755
     
-    - name: copy laravel app to /var/www/html/
-      copy:
-        src: /home/vagrant/laravel
-        dest: /var/www/html/
-        mode: 0755
+#     # - name: copy laravel app to /var/www/html/
+#     #   copy:
+#     #     src: /home/vagrant/laravel
+#     #     dest: /var/www/html/
+#     #     mode: 0755
     
-    # - name:  Execute bash script to server the Laravel php app
-    #   command: /home/vagrant/laravel.sh
+#     - name:  Execute bash script to server the Laravel php app
+#       command: /home/ansible/laravel.sh
+    
+#     # - name: restart apache2
+#     #   service:
+#     #     name: apache2
+#     #     state: restarted
