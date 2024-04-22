@@ -32,12 +32,12 @@ sudo a2enmod php8.3
 sudo systemctl restart apache2
 
 # Define MySQL password(giving it a password)
-MYSQL_PWD="saintcharles"
+MYSQL_PWD="adeayo123"
 
 # Define new database parameters
-username="gokeojinni"
-password="saintcharles"
-database="Carlogdatabase"
+username="adeayo_laravel"
+password="adeayo123"
+database="adeayo_database"
 
 # Execute SQL commands
 mysql -u root -p$MYSQL_PWD <<MYSQL_SCRIPT
