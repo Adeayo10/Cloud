@@ -20,6 +20,7 @@ using the vagrant file below, we can set up the master and slave servers
 - The script will also configure the apache server to serve the files from the cloned repository
 ![bash script](images/bash.png)
 ![bash script](images/bash2.png)
+![bash script](images/bash3.png)
 The code is in LAMP_install.sh
 
 # setting up the ansible playbook
